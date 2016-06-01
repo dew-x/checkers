@@ -2,11 +2,159 @@
 
 
 
-Game::Game()
-{
+Game::Game(){
+	width = 1280;
+	height = 720;
+
+	app.create(sf::VideoMode(width,height), "GAME", sf::Style::Default);
+	app.setVerticalSyncEnabled(true);
+	app.setKeyRepeatEnabled(false);
+	scene = SCENE_MENU;
+	nickpos = 0;
+	memset(nick, 0, NICKSIZE);
+	font = sf::Font();
+	font.loadFromFile("madpixels.otf");
+	typeYourNick = sf::Text("Type your nick:", font, height / 30);
+	typeYourNick.setOrigin({ typeYourNick.getLocalBounds().width / 2.0f,typeYourNick.getLocalBounds().height / 2.0f });
+	typeYourNick.setPosition({ width / 2.0f,height / 2.2f });
+	typeYourNick.setColor(sf::Color::Red);
+	fpsText = sf::Text("FPS:", font, height / 30);
+	fpsText.setColor(sf::Color::Red);
+	
+	deltaClock = sf::Clock();
+
+
+	//load images
+	if (!menuBackground.loadFromFile("textures/menu.png"))
+	{
+		// error...
+	}
+	if (!pb.loadFromFile("textures/BUTTON.png"))
+	{
+		// error...
+	}
+	if (!ib.loadFromFile("textures/BUTTON2.png"))
+	{
+		// error...
+	}
+	if (!eb.loadFromFile("textures/BUTTON3.png"))
+	{
+		// error...
+	}
+
+	menuB.setTexture(menuBackground);
+	menuB.setPosition(0, 0);
+	menuB.setScale(width/menuB.getLocalBounds().width, height/menuB.getLocalBounds().height);
+
+	playerB.setTexture(pb);
+	playerB.setOrigin(playerB.getLocalBounds().width/2.0f, playerB.getLocalBounds().height/2.0f);
+	playerB.setScale((width*0.18f) / playerB.getLocalBounds().width, (height*0.18f) / playerB.getLocalBounds().height);
+	playerB.setPosition(width/2, height/2);
+	
+
+	iaB.setTexture(ib);
+	iaB.setOrigin(iaB.getLocalBounds().width/2.0f, iaB.getLocalBounds().height / 2.0f);
+	iaB.setScale((width*0.18f) / iaB.getLocalBounds().width, (height*0.18f) / iaB.getLocalBounds().height);
+	iaB.setPosition(width / 2, (height / 2) + iaB.getGlobalBounds().height);
+	
+
+	exitB.setTexture(eb);
+	exitB.setOrigin(exitB.getLocalBounds().width/2.0f, exitB.getLocalBounds().height/2.0f);
+	exitB.setScale((width*0.18f) / exitB.getLocalBounds().width, (height*0.18f) / exitB.getLocalBounds().height);
+	exitB.setPosition(width - exitB.getGlobalBounds().width, height - exitB.getGlobalBounds().height);
+	
+	//create scope
+	
+	app.setMouseCursorVisible(false);
 }
 
 
-Game::~Game()
-{
+Game::~Game(){
+	
 }
+
+void Game::run(){
+	//app->setFramerateLimit(60);
+	while (app.isOpen())
+	{
+		sf::Time dt = deltaClock.restart();
+		sf::Event event;
+		while (app.pollEvent(event))
+		{
+			// "close requested" event: we close the window
+			if (event.type == sf::Event::Closed) {
+				app.close();
+			}
+
+			//mouse event
+			else if (event.type == sf::Event::MouseButtonPressed) {
+				if (scene == SCENE_GAME) {
+					if (event.mouseButton.button == sf::Mouse::Left)
+					{
+						
+					}
+				}
+			}
+
+			//key pressed events
+			else if (event.type == sf::Event::KeyPressed) {
+				if (event.key.code == sf::Keyboard::Escape || event.key.alt && event.key.code == sf::Keyboard::F4) {
+					app.close();
+				}
+				else if (scene == SCENE_GAME) {
+					if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::D) {
+
+					}
+
+				}
+			}
+
+			//key released events
+			else if (event.type == sf::Event::KeyReleased) {
+				if (scene == SCENE_MENU) {
+					
+				}
+				else if (scene == SCENE_GAME) {
+					
+				}
+			}
+		}
+		app.clear(sf::Color(0, 0, 0, 128));
+
+		if (scene == SCENE_MENU) {
+			drawMenu();
+		}
+		else if (scene == SCENE_GAME) {
+			doGame(dt);
+		}
+		fps = 0.99f*fps + 0.01f / dt.asSeconds();
+		fpsText.setString(to_string((int)fps) + " FPS");
+		app.draw(fpsText);
+		app.display();
+
+	}
+}
+
+void Game::drawMenu(){
+	app.draw(menuB);
+	app.draw(playerB);
+	app.draw(iaB);
+	app.draw(exitB);
+}
+
+void Game::doGame(sf::Time dt){
+
+}
+
+void Game::updateGame(sf::Time dt){
+
+}
+
+void Game::drawGame(){
+
+}
+
+void Game::updatePositions(){
+
+}
+
