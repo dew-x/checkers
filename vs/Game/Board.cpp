@@ -2,9 +2,25 @@
 
 
 
-Board::Board()
+Board::Board(int width, int height)
 {
 	table = sf::VertexArray(sf::Quads, 256);
+	int min = width;
+	if (height < width) min = height;
+	int ox = (width - min) / 2;
+	int oy = (height - min) / 2;
+	for (int i = 0; i < 8; ++i) {
+		for (int j = 0; j < 8; ++j) {
+			int coord = (i * 8 + j)*4;
+			table[coord].position = { ox + min / 8 * i,oy + min / 8 * j };
+			table[coord+1].position = { ox + min / 8 * (i+1),oy + min / 8 * j };
+			table[coord+2].position = { ox + min / 8 * (i+1),oy + min / 8 * (j+1) };
+			table[coord+3].position = { ox + min / 8 * i,oy + min / 8 * (j+1) };
+			sf::Color bg = sf::Color::White;
+			if ((i + j) % 2) bg = sf::Color::Black;
+			for (int k = 0; k < 4; ++k) table[coord + k].color = bg;
+		}
+	}
 	reset();
 }
 

@@ -48,7 +48,7 @@ void moveNormal(GRID g, unsigned pos, int d, vector<Move> &moves, Move m);
 class Board:public sf::Drawable
  {
 public:
-	Board();
+	Board(int width, int height);
 	~Board();
 	Player currentPlayer();
 	int currentTurn();
