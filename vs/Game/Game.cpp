@@ -11,6 +11,12 @@ Game::Game(){
 	app.setKeyRepeatEnabled(false);
 	scene = SCENE_MENU;
 
+	int min = width;
+	if (height < width) min = height;
+	ox = (width - min) / 2;
+	oy = (height - min) / 2;
+	cellSize = min / 8;
+
 	//load images
 	if (!menuBackground.loadFromFile("textures/menu.png"))
 	{
@@ -91,8 +97,9 @@ void Game::run(){
 				}
 
 				else if (scene == SCENE_GAME) {
-
-
+					if (event.mouseButton.button == sf::Mouse::Left) {
+						initPos = worldToGrid(event.mouseButton.x, event.mouseButton.y);
+					}
 				}
 			}
 			//mouse event released
@@ -104,8 +111,12 @@ void Game::run(){
 				}
 
 				else if (scene == SCENE_GAME) {
-
-
+					if (event.mouseButton.button == sf::Mouse::Left) {
+						finalPos = worldToGrid(event.mouseButton.x, event.mouseButton.y);
+						if (initPos.x >= 0.0f && initPos.y <= 7.0f && finalPos.x >= 0.0f && finalPos.y <= 7.0f) {
+							board->makeMove(initPos, finalPos);
+						}
+					}
 				}
 			}
 			//key pressed events
@@ -165,5 +176,10 @@ void Game::drawGame(){
 
 void Game::updatePositions(){
 
+}
+
+Position Game::worldToGrid(int x, int y) {
+	Position p = { (x - ox) / cellSize , (y - oy) / cellSize };
+	return p;
 }
 

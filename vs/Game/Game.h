@@ -27,11 +27,20 @@ private:
 	int uid;
 	scenes scene;
 	Board *board;
+
+	int ox;
+	int oy;
+	int cellSize;
+
 	void drawMenu();
 	void doGame(sf::Time dt);
 	void updateGame(sf::Time dt);
 	void drawGame();
 	void updatePositions();
+
+	Position worldToGrid(int x, int y);
+	Position initPos;
+	Position finalPos;
 
 	// TEXTURES
 	sf::Texture menuBackground;
