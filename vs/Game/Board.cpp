@@ -75,6 +75,7 @@ void Board::makeMove(Position a, Position b)
 		grid[aID] = NONE;
 		if (b.y == 0 || b.y == 7) grid[bID] = (Piece)(grid[bID]|QUEEN);
 		actualMoves = listPossibleMoves(grid, currentPlayer());
+		update();
 	}
 }
 

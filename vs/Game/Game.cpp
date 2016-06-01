@@ -83,7 +83,18 @@ void Game::run(){
 			//mouse event pressed
 			else if (event.type == sf::Event::MouseButtonPressed) {
 				if (scene == SCENE_MENU) {
-					if (event.mouseButton.button == sf::Mouse::Left){
+					
+				}
+				else if (scene == SCENE_GAME) {
+					if (event.mouseButton.button == sf::Mouse::Left) {
+						initPos = worldToGrid(event.mouseButton.x, event.mouseButton.y);
+					}
+				}
+			}
+			//mouse event released
+			else if (event.type == sf::Event::MouseButtonReleased) {
+				if (scene == SCENE_MENU) {
+					if (event.mouseButton.button == sf::Mouse::Left) {
 						if (playerB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
 							scene = SCENE_GAME;
 						}
@@ -98,22 +109,8 @@ void Game::run(){
 
 				else if (scene == SCENE_GAME) {
 					if (event.mouseButton.button == sf::Mouse::Left) {
-						initPos = worldToGrid(event.mouseButton.x, event.mouseButton.y);
-					}
-				}
-			}
-			//mouse event released
-			else if (event.type == sf::Event::MouseButtonReleased) {
-				if (scene == SCENE_MENU) {
-					if (event.mouseButton.button == sf::Mouse::Left) {
-
-					}
-				}
-
-				else if (scene == SCENE_GAME) {
-					if (event.mouseButton.button == sf::Mouse::Left) {
 						finalPos = worldToGrid(event.mouseButton.x, event.mouseButton.y);
-						if (initPos.x >= 0.0f && initPos.y <= 7.0f && finalPos.x >= 0.0f && finalPos.y <= 7.0f) {
+						if (initPos.x >= 0 && initPos.x <= 7 && finalPos.y >= 0 && finalPos.y <= 7) {
 							board->makeMove(initPos, finalPos);
 						}
 					}
@@ -180,6 +177,7 @@ void Game::updatePositions(){
 
 Position Game::worldToGrid(int x, int y) {
 	Position p = { (x - ox) / cellSize , (y - oy) / cellSize };
+	cout << p.x << " " << p.y << endl;
 	return p;
 }
 
