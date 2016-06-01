@@ -6,11 +6,13 @@ Board::Board()
 }
 Board::Board(int width, int height)
 {
+	reset();
 	table = sf::VertexArray(sf::Quads, 256);
 	int min = width;
 	if (height < width) min = height;
-	int ox = (width - min) / 2;
-	int oy = (height - min) / 2;
+	ox = (width - min) / 2;
+	oy = (height - min) / 2;
+	cellSize = min / 8;
 	for (int i = 0; i < 8; ++i) {
 		for (int j = 0; j < 8; ++j) {
 			int coord = (i * 8 + j)*4;
@@ -22,26 +24,6 @@ Board::Board(int width, int height)
 			if ((i + j) % 2) bg = sf::Color::Black;
 			for (int k = 0; k < 4; ++k) table[coord + k].color = bg;
 		}
-	}
-	reset();
-	cellSize = min / 8;
-
-	//load images
-	if (!whiteChecker.loadFromFile("textures/whiteChecker.png"))
-	{
-		// error...
-	}
-	if (!redChecker.loadFromFile("textures/redChecker.png"))
-	{
-		// error...
-	}
-	if (!whiteQueen.loadFromFile("textures/whiteQueen.png"))
-	{
-		// error...
-	}
-	if (!redQueen.loadFromFile("textures/redQueen.png"))
-	{
-		// error...
 	}
 	checkers = vector<sf::Sprite>(24);
 	update();
@@ -111,31 +93,61 @@ void Board::reset()
 }
 
 void Board::update(){
+	//load images
+	if (!whiteChecker.loadFromFile("textures/whiteChecker.png"))
+	{
+		// error...
+		cout << "ERR" << endl;
+	}
+	if (!redChecker.loadFromFile("textures/redChecker.png"))
+	{
+		// error...
+		cout << "ERR" << endl;
+	}
+	if (!whiteQueen.loadFromFile("textures/whiteQueen.png"))
+	{
+		// error...
+		cout << "ERR" << endl;
+	}
+	if (!redQueen.loadFromFile("textures/redQueen.png"))
+	{
+		// error...
+		cout << "ERR" << endl;
+	}
 	int whiteCounter = 0;
 	int redCounter = 0;
 	for (unsigned i = 0; i < GSIZE; ++i) {
 		if (grid[i] & WHITE) {
-			sf::Texture tex = whiteChecker;
+			sf::Texture *tex = &whiteChecker;
 			if (grid[i] & QUEEN) {
-				tex = whiteQueen;
+				tex = &whiteQueen;
 			}
 			Position p = id2pos(i);
-			checkers[whiteCounter].setPosition(p.x * cellSize, p.y * cellSize );
-			checkers[whiteCounter].setTexture(tex);
+			checkers[whiteCounter] = sf::Sprite(*tex);
+			checkers[whiteCounter].setPosition(ox+p.x * cellSize, oy+p.y * cellSize );
 			++whiteCounter;
 		}
 		else if (grid[i] & BLACK) {
-			sf::Texture tex = redChecker;
+			sf::Texture *tex = &redChecker;
 			if (grid[i] & QUEEN) {
-				tex = redQueen;
+				tex = &redQueen;
 			}
 			Position p = id2pos(i);
-			checkers[redCounter + 12].setPosition(p.x * cellSize, p.y * cellSize);
-			checkers[redCounter+12].setTexture(tex);
+			checkers[redCounter + 12] = sf::Sprite(*tex);
+			checkers[redCounter + 12].setPosition(ox+p.x * cellSize, oy+p.y * cellSize);
 			++redCounter;
 		}
-
-
+	}
+	cout << whiteCounter << " " << redCounter << " " << checkers.size() << endl;
+	while (whiteCounter < 12) {
+		checkers[whiteCounter] = sf::Sprite(whiteChecker);
+		checkers[whiteCounter].setPosition(-1000,-1000);
+		++whiteCounter;
+	}
+	while (redCounter < 12) {
+		checkers[redCounter+12] = sf::Sprite(redChecker);
+		checkers[redCounter+12].setPosition(-1000, -1000);
+		++redCounter;
 	}
 }
 
@@ -164,12 +176,12 @@ int Board::playerPieceDirection(Player p)
 
 bool Board::isQueen(Piece p)
 {
-	return p&QUEEN;
+	return (p&QUEEN)>0;
 }
 
 void Board::draw(sf::RenderTarget & target, sf::RenderStates states) const{
 	target.draw(table);
-	for (unsigned i = 0; i < checkers.size(); i++) {
+	for (unsigned i = 0; i < 24; i++) {
 		target.draw(checkers[i]);
 	}
 }

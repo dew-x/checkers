@@ -23,24 +23,15 @@ public:
 	void run();
 private:
 	sf::RenderWindow app;
-	sf::Font font;
-	sf::Text typeYourNick;
-	sf::Text fpsText;
 	int width, height;
 	int uid;
 	scenes scene;
-	Board board;
-	char nick[NICKSIZE];
-	int nickpos;
+	Board *board;
 	void drawMenu();
 	void doGame(sf::Time dt);
 	void updateGame(sf::Time dt);
 	void drawGame();
 	void updatePositions();
-
-	
-	sf::Clock deltaClock;
-	float fps;
 
 	// TEXTURES
 	sf::Texture menuBackground;

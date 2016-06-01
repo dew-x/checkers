@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <SFML\Graphics.hpp>
+#include <iostream>
 using namespace std;
 
 enum Piece {
@@ -75,6 +76,7 @@ private:
 	int piecesBlack;
 	vector<Move> actualMoves;
 	int cellSize;
+	int ox, oy;
 
 	sf::VertexArray table;
 	sf::Texture whiteChecker;

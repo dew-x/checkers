@@ -10,17 +10,6 @@ Game::Game(){
 	app.setVerticalSyncEnabled(true);
 	app.setKeyRepeatEnabled(false);
 	scene = SCENE_MENU;
-	font = sf::Font();
-	font.loadFromFile("madpixels.otf");
-	/*typeYourNick = sf::Text("Type your nick:", font, height / 30);
-	typeYourNick.setOrigin({ typeYourNick.getLocalBounds().width / 2.0f,typeYourNick.getLocalBounds().height / 2.0f });
-	typeYourNick.setPosition({ width / 2.0f,height / 2.2f });
-	typeYourNick.setColor(sf::Color::Red);*/
-	fpsText = sf::Text("FPS:", font, height / 30);
-	fpsText.setColor(sf::Color::Red);
-	
-	deltaClock = sf::Clock();
-	board = Board(width, height);
 
 	//load images
 	if (!menuBackground.loadFromFile("textures/menu.png"))
@@ -64,18 +53,19 @@ Game::Game(){
 	//create scope
 	
 	//app.setMouseCursorVisible(false);
+
+	board = new Board(width, height);
 }
 
 
 Game::~Game(){
-	
+	delete board;
 }
 
 void Game::run(){
 	//app->setFramerateLimit(60);
 	while (app.isOpen())
 	{
-		sf::Time dt = deltaClock.restart();
 		sf::Event event;
 		while (app.pollEvent(event))
 		{
@@ -149,9 +139,6 @@ void Game::run(){
 		else if (scene == SCENE_GAME) {
 			drawGame();
 		}
-		fps = 0.99f*fps + 0.01f / dt.asSeconds();
-		fpsText.setString(to_string((int)fps) + " FPS");
-		app.draw(fpsText);
 		app.display();
 
 	}
@@ -173,7 +160,7 @@ void Game::updateGame(sf::Time dt){
 }
 
 void Game::drawGame(){
-	app.draw(board);
+	app.draw(*board);
 }
 
 void Game::updatePositions(){
