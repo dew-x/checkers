@@ -4,6 +4,7 @@
 
 Board::Board()
 {
+	table = sf::VertexArray(sf::Quads, 256);
 	reset();
 }
 
@@ -96,6 +97,10 @@ int Board::playerPieceDirection(Player p)
 bool Board::isQueen(Piece p)
 {
 	return p&QUEEN;
+}
+
+void Board::draw(sf::RenderTarget & target, sf::RenderStates states) const{
+	target.draw(table);
 }
 
 vector<Move> listPossibleMoves(GRID g, Player p)

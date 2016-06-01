@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <SFML\Graphics.hpp>
 using namespace std;
 
 enum Piece {
@@ -44,8 +45,8 @@ vector<Move> listPossibleMoves(GRID g, Player p);
 void moveQueen(GRID g, unsigned pos, vector<Move> &moves, Move m);
 void moveNormal(GRID g, unsigned pos, int d, vector<Move> &moves, Move m);
 
-class Board
-{
+class Board:public sf::Drawable
+ {
 public:
 	Board();
 	~Board();
@@ -60,6 +61,7 @@ public:
 	static bool playerUsePiece(Player player, Piece piece);
 	static int playerPieceDirection(Player p);
 	static bool isQueen(Piece p);
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 private:
 	unsigned pos2id(Position p);
 	Position id2pos(unsigned id);
@@ -69,5 +71,6 @@ private:
 	int piecesWhite;
 	int piecesBlack;
 	vector<Move> actualMoves;
+	sf::VertexArray table;
 };
 
