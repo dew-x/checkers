@@ -36,6 +36,14 @@ const GRID DEFAULT = {
 	BLACK,BLACK,BLACK,BLACK,
 };
 
+struct Move {
+	unsigned a, b;
+};
+
+vector<Move> listPossibleMoves(GRID g, Player p);
+void moveQueen(GRID g, unsigned pos, vector<Move> &moves, Move m);
+void moveNormal(GRID g, unsigned pos, int d, vector<Move> &moves, Move m);
+
 class Board
 {
 public:
@@ -49,15 +57,17 @@ public:
 	void makeMove(Position a, Position b);
 	void getGrid(GRID &res);
 	void reset();
+	static bool playerUsePiece(Player player, Piece piece);
+	static int playerPieceDirection(Player p);
+	static bool isQueen(Piece p);
 private:
 	unsigned pos2id(Position p);
 	Position id2pos(unsigned id);
-	bool playerUsePiece(Player player, Piece piece);
 private:
 	int turn;
 	GRID grid;
 	int piecesWhite;
 	int piecesBlack;
-
+	vector<Move> actualMoves;
 };
 
