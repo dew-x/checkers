@@ -29,6 +29,7 @@ private:
 	int width, height;
 	int uid;
 	scenes scene;
+	Board board;
 	char nick[NICKSIZE];
 	int nickpos;
 	void drawMenu();
@@ -36,6 +37,7 @@ private:
 	void updateGame(sf::Time dt);
 	void drawGame();
 	void updatePositions();
+
 	
 	sf::Clock deltaClock;
 	float fps;

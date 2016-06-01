@@ -59,6 +59,7 @@ public:
 	void makeMove(Position a, Position b);
 	void getGrid(GRID &res);
 	void reset();
+	void update();
 	static bool playerUsePiece(Player player, Piece piece);
 	static int playerPieceDirection(Player p);
 	static bool isQueen(Piece p);
@@ -67,11 +68,20 @@ private:
 	unsigned pos2id(Position p);
 	Position id2pos(unsigned id);
 private:
+	
 	int turn;
 	GRID grid;
 	int piecesWhite;
 	int piecesBlack;
 	vector<Move> actualMoves;
+	int cellSize;
+
 	sf::VertexArray table;
+	sf::Texture whiteChecker;
+	sf::Texture redChecker;
+	sf::Texture whiteQueen;
+	sf::Texture redQueen;
+
+	vector<sf::Sprite> checkers;
 };
 

@@ -24,6 +24,27 @@ Board::Board(int width, int height)
 		}
 	}
 	reset();
+	cellSize = min / 8;
+
+	//load images
+	if (!whiteChecker.loadFromFile("textures/whiteChecker.png"))
+	{
+		// error...
+	}
+	if (!redChecker.loadFromFile("textures/redChecker.png"))
+	{
+		// error...
+	}
+	if (!whiteQueen.loadFromFile("textures/whiteQueen.png"))
+	{
+		// error...
+	}
+	if (!redQueen.loadFromFile("textures/redQueen.png"))
+	{
+		// error...
+	}
+	checkers = vector<sf::Sprite>(24);
+	update();
 }
 
 
@@ -89,6 +110,35 @@ void Board::reset()
 	actualMoves = listPossibleMoves(grid, currentPlayer());
 }
 
+void Board::update(){
+	int whiteCounter = 0;
+	int redCounter = 0;
+	for (unsigned i = 0; i < GSIZE; ++i) {
+		if (grid[i] & WHITE) {
+			sf::Texture tex = whiteChecker;
+			if (grid[i] & QUEEN) {
+				tex = whiteQueen;
+			}
+			Position p = id2pos(i);
+			checkers[whiteCounter].setPosition(p.x * cellSize, p.y * cellSize );
+			checkers[whiteCounter].setTexture(tex);
+			++whiteCounter;
+		}
+		else if (grid[i] & BLACK) {
+			sf::Texture tex = redChecker;
+			if (grid[i] & QUEEN) {
+				tex = redQueen;
+			}
+			Position p = id2pos(i);
+			checkers[redCounter + 12].setPosition(p.x * cellSize, p.y * cellSize);
+			checkers[redCounter+12].setTexture(tex);
+			++redCounter;
+		}
+
+
+	}
+}
+
 unsigned Board::pos2id(Position p)
 {
 	return (p.x / 2)*p.y;
@@ -119,6 +169,9 @@ bool Board::isQueen(Piece p)
 
 void Board::draw(sf::RenderTarget & target, sf::RenderStates states) const{
 	target.draw(table);
+	for (unsigned i = 0; i < checkers.size(); i++) {
+		target.draw(checkers[i]);
+	}
 }
 
 vector<Move> listPossibleMoves(GRID g, Player p)

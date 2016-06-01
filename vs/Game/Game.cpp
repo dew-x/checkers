@@ -10,19 +10,17 @@ Game::Game(){
 	app.setVerticalSyncEnabled(true);
 	app.setKeyRepeatEnabled(false);
 	scene = SCENE_MENU;
-	nickpos = 0;
-	memset(nick, 0, NICKSIZE);
 	font = sf::Font();
 	font.loadFromFile("madpixels.otf");
-	typeYourNick = sf::Text("Type your nick:", font, height / 30);
+	/*typeYourNick = sf::Text("Type your nick:", font, height / 30);
 	typeYourNick.setOrigin({ typeYourNick.getLocalBounds().width / 2.0f,typeYourNick.getLocalBounds().height / 2.0f });
 	typeYourNick.setPosition({ width / 2.0f,height / 2.2f });
-	typeYourNick.setColor(sf::Color::Red);
+	typeYourNick.setColor(sf::Color::Red);*/
 	fpsText = sf::Text("FPS:", font, height / 30);
 	fpsText.setColor(sf::Color::Red);
 	
 	deltaClock = sf::Clock();
-
+	board = Board(width, height);
 
 	//load images
 	if (!menuBackground.loadFromFile("textures/menu.png"))
@@ -49,13 +47,13 @@ Game::Game(){
 	playerB.setTexture(pb);
 	playerB.setOrigin(playerB.getLocalBounds().width/2.0f, playerB.getLocalBounds().height/2.0f);
 	playerB.setScale((width*0.18f) / playerB.getLocalBounds().width, (height*0.18f) / playerB.getLocalBounds().height);
-	playerB.setPosition(width/2, height/2);
+	playerB.setPosition(width/2.0f, height/2.0f);
 	
 
 	iaB.setTexture(ib);
 	iaB.setOrigin(iaB.getLocalBounds().width/2.0f, iaB.getLocalBounds().height / 2.0f);
 	iaB.setScale((width*0.18f) / iaB.getLocalBounds().width, (height*0.18f) / iaB.getLocalBounds().height);
-	iaB.setPosition(width / 2, (height / 2) + iaB.getGlobalBounds().height);
+	iaB.setPosition(width / 2.0f, (height / 2.0f) + iaB.getGlobalBounds().height);
 	
 
 	exitB.setTexture(eb);
@@ -65,7 +63,7 @@ Game::Game(){
 	
 	//create scope
 	
-	app.setMouseCursorVisible(false);
+	//app.setMouseCursorVisible(false);
 }
 
 
@@ -86,16 +84,40 @@ void Game::run(){
 				app.close();
 			}
 
-			//mouse event
+			//mouse event pressed
 			else if (event.type == sf::Event::MouseButtonPressed) {
-				if (scene == SCENE_GAME) {
-					if (event.mouseButton.button == sf::Mouse::Left)
-					{
-						
+				if (scene == SCENE_MENU) {
+					if (event.mouseButton.button == sf::Mouse::Left){
+						if (playerB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
+							scene = SCENE_GAME;
+						}
+						if (iaB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
+							scene = SCENE_GAME;
+						}
+						if (exitB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
+							app.close();
+						}
 					}
 				}
-			}
 
+				else if (scene == SCENE_GAME) {
+
+
+				}
+			}
+			//mouse event released
+			else if (event.type == sf::Event::MouseButtonReleased) {
+				if (scene == SCENE_MENU) {
+					if (event.mouseButton.button == sf::Mouse::Left) {
+
+					}
+				}
+
+				else if (scene == SCENE_GAME) {
+
+
+				}
+			}
 			//key pressed events
 			else if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Escape || event.key.alt && event.key.code == sf::Keyboard::F4) {
@@ -125,7 +147,7 @@ void Game::run(){
 			drawMenu();
 		}
 		else if (scene == SCENE_GAME) {
-			doGame(dt);
+			drawGame();
 		}
 		fps = 0.99f*fps + 0.01f / dt.asSeconds();
 		fpsText.setString(to_string((int)fps) + " FPS");
@@ -151,7 +173,7 @@ void Game::updateGame(sf::Time dt){
 }
 
 void Game::drawGame(){
-
+	app.draw(board);
 }
 
 void Game::updatePositions(){
