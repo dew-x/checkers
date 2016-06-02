@@ -64,13 +64,15 @@ public:
 	static bool playerUsePiece(Player player, Piece piece);
 	static int playerPieceDirection(Player p);
 	static bool isQueen(Piece p);
+	static unsigned pos2id(Position p);
+	static Position id2pos(unsigned id);
+	static Piece otherPiece(Piece p);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	void press(int x, int y);
 	void move(int x, int y);
 	void release(int x, int y);
 private:
-	unsigned pos2id(Position p);
-	Position id2pos(unsigned id);
+	
 private:
 	
 	int turn;

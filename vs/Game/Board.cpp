@@ -139,7 +139,6 @@ void Board::update(){
 			++redCounter;
 		}
 	}
-	cout << whiteCounter << " " << redCounter << " " << checkers.size() << endl;
 	while (whiteCounter < 12) {
 		checkers[whiteCounter] = sf::Sprite(whiteChecker);
 		checkers[whiteCounter].setPosition(-1000,-1000);
@@ -154,7 +153,7 @@ void Board::update(){
 
 unsigned Board::pos2id(Position p)
 {
-	return (p.x / 2)*p.y;
+	return (p.x / 2)+p.y*4;
 }
 
 Position Board::id2pos(unsigned id)
@@ -162,6 +161,12 @@ Position Board::id2pos(unsigned id)
 	unsigned y = id / 4;
 	unsigned x = (id % 4)*2+(y%2);
 	return { x,y };
+}
+
+Piece Board::otherPiece(Piece p)
+{
+	if (p&WHITE) return BLACK;
+	else if (p&BLACK) return WHITE;
 }
 
 bool Board::playerUsePiece(Player player, Piece piece)
@@ -213,6 +218,7 @@ vector<Move> listPossibleMoves(GRID g, Player p)
 			}
 		}
 	}
+	cout << ret.size() << endl;
 	return ret;
 }
 
@@ -222,7 +228,50 @@ void moveQueen(GRID g, unsigned pos, vector<Move> &moves, Move m)
 
 void moveNormal(GRID g, unsigned pos, int d, vector<Move> &moves, Move m)
 {
-	// right
-
-	// left
+	Position current = Board::id2pos(pos);
+	int nextY = (int)current.y + d;
+	if (nextY >= 0 && nextY < 8) {
+		// right
+		if (current.x < 7) {
+			unsigned right = Board::pos2id({ current.x + 1,current.y + d });
+			if (g[right] == NONE) {
+				moves.push_back({ m.a,right });
+			}
+			else if (g[right] & Board::otherPiece(g[pos])) {
+				if (current.x < 6 && nextY >= 1 && nextY < 7) {
+					unsigned right2 = Board::pos2id({ current.x + 2,current.y + d +d});
+					if (g[right2] == NONE) {
+						moves.push_back({ m.a,right2 });
+						GRID gc;
+						memcpy(gc,g,GSIZE*sizeof(Piece));
+						gc[right2] = gc[pos];
+						gc[right] = NONE;
+						gc[pos] = NONE;
+						moveNormal(gc, right2, d, moves, m);
+					}
+				}
+			}
+		}
+		// left
+		if (current.x > 0) {
+			unsigned left = Board::pos2id({ current.x - 1,current.y + d });
+			if (g[left] == NONE) {
+				moves.push_back({ m.a,left });
+			}
+			else if (g[left] & Board::otherPiece(g[pos])) {
+				if (current.x < 6 && nextY >= 1 && nextY < 7) {
+					unsigned left2 = Board::pos2id({ current.x - 2,current.y + d + d });
+					if (g[left2] == NONE) {
+						moves.push_back({ m.a,left2 });
+						GRID gc;
+						memcpy(gc, g, GSIZE*sizeof(Piece));
+						gc[left2] = gc[pos];
+						gc[left] = NONE;
+						gc[pos] = NONE;
+						moveNormal(gc, left2, d, moves, m);
+					}
+				}
+			}
+		}
+	}
 }
