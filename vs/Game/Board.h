@@ -83,6 +83,7 @@ private:
 	int cellSize;
 	int ox, oy;
 
+	sf::Sprite *moving;
 	sf::VertexArray table;
 	sf::Texture whiteChecker;
 	sf::Texture redChecker;

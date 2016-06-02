@@ -27,6 +27,7 @@ Board::Board(int width, int height)
 	}
 	checkers = vector<sf::Sprite>(24);
 	update();
+	moving = NULL;
 }
 
 
@@ -192,16 +193,30 @@ void Board::draw(sf::RenderTarget & target, sf::RenderStates states) const{
 	}
 }
 
-void Board::press(int x, int y)
-{
+void Board::press(int x, int y){
+	for (unsigned i = 0; i < checkers.size(); i++) {
+		if(checkers[i].getGlobalBounds().contains(x,y)){
+			Position p = { (x - ox) / cellSize , (y - oy) / cellSize };
+			unsigned id = pos2id(p);
+			if (playerUsePiece(currentPlayer(), grid[id])) {
+				moving = &checkers[i];
+			}
+			break;
+		}
+	}
 }
 
-void Board::move(int x, int y)
-{
+void Board::move(int x, int y){
+	if (moving != NULL) {
+		moving->setPosition(x, y);
+	}
 }
 
-void Board::release(int x, int y)
-{
+void Board::release(int x, int y){
+	if (moving != NULL) {
+		moving->setPosition(x, y);
+		moving = NULL;
+	}
 }
 
 vector<Move> listPossibleMoves(GRID g, Player p)
