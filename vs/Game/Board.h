@@ -65,6 +65,9 @@ public:
 	static int playerPieceDirection(Player p);
 	static bool isQueen(Piece p);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+	void press(int x, int y);
+	void move(int x, int y);
+	void release(int x, int y);
 private:
 	unsigned pos2id(Position p);
 	Position id2pos(unsigned id);

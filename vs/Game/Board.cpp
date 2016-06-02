@@ -187,6 +187,18 @@ void Board::draw(sf::RenderTarget & target, sf::RenderStates states) const{
 	}
 }
 
+void Board::press(int x, int y)
+{
+}
+
+void Board::move(int x, int y)
+{
+}
+
+void Board::release(int x, int y)
+{
+}
+
 vector<Move> listPossibleMoves(GRID g, Player p)
 {
 	vector<Move> ret(0);
