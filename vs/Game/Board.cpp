@@ -249,6 +249,49 @@ vector<Move> listPossibleMoves(GRID g, Player p)
 
 void moveQueen(GRID g, unsigned pos, vector<Move> &moves, Move m, bool init)
 {
+	Position current = Board::id2pos(pos);
+	vector<vector<int> > dirs = {
+		{1,1},
+		{1,-1},
+		{-1,1},
+		{-1,-1}
+	};
+	for (unsigned d = 0; d < dirs.size(); ++d) {
+		int dx = dirs[d][0];
+		int dy = dirs[d][1];
+		int x = current.x + dx;
+		int y = current.y + dy;
+		bool jump = false;
+		int kill = -1;
+		vector<Action> todo = m.todo;
+		todo.push_back({ pos,NONE });
+		while (x >= 0 && x < 8 && y >= 0 && y < 8) {
+			unsigned next = Board::pos2id({ (unsigned)x,(unsigned)y });
+			if (g[next] == NONE && (init || jump)) {
+				Move mov = { m.a,next,todo };
+				todo.push_back({ next,g[pos] });
+				moves.push_back(mov);
+				if (jump) {
+					GRID gc;
+					memcpy(gc, g, GSIZE*sizeof(Piece));
+					gc[next] = gc[pos];
+					gc[kill] = NONE;
+					gc[pos] = NONE;
+					moveQueen(gc, next, moves, mov, false);
+				}
+			}
+			else if (g[next] & Board::otherPiece(g[pos])) {
+				jump = true;
+				kill = next;
+				todo.push_back({ next,NONE });
+			}
+			else {
+				break;
+			}
+			x += dx;
+			y += dy;
+		}
+	}
 }
 
 void moveNormal(GRID g, unsigned pos, int d, vector<Move> &moves, Move m, bool init)
