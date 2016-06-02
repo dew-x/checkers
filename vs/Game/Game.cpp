@@ -166,6 +166,7 @@ void Game::updateGame(){
 	board->move(sf::Mouse::getPosition(app).x, sf::Mouse::getPosition(app).y);
 	if (userPlaysAs != board->currentPlayer()) {
 		++aiTurn;
+		cout << "AI" << aiTurn << endl;
 		if (aiTurn > AITURNS) {
 			GRID grid;
 			board->getGrid(grid);

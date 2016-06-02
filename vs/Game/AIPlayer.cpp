@@ -13,5 +13,5 @@ AIPlayer::~AIPlayer()
 
 Move AIPlayer::doMove(GRID g, vector<Move> m)
 {
-	return Move();
+	return m[rand()%m.size()];
 }
