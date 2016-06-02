@@ -118,7 +118,8 @@ void Board::update(){
 			}
 			Position p = id2pos(i);
 			checkers[whiteCounter] = sf::Sprite(*tex);
-			checkers[whiteCounter].setPosition((float)ox+p.x * cellSize, (float)oy+p.y * cellSize );
+			checkers[whiteCounter].setOrigin({ checkers[whiteCounter].getLocalBounds().width / 2.0f,checkers[whiteCounter].getLocalBounds().height / 2.0f });
+			checkers[whiteCounter].setPosition((float)ox+(p.x+0.5f) * cellSize, (float)oy+(p.y + 0.5f) * cellSize );
 			++whiteCounter;
 		}
 		else if (grid[i] & BLACK) {
@@ -128,7 +129,8 @@ void Board::update(){
 			}
 			Position p = id2pos(i);
 			checkers[redCounter + 12] = sf::Sprite(*tex);
-			checkers[redCounter + 12].setPosition((float)ox+p.x * cellSize, (float)oy+p.y * cellSize);
+			checkers[redCounter + 12].setOrigin({ checkers[redCounter + 12].getLocalBounds().width / 2.0f,checkers[redCounter + 12].getLocalBounds().height / 2.0f });
+			checkers[redCounter + 12].setPosition((float)ox+(p.x + 0.5f) * cellSize, (float)oy+(p.y + 0.5f) * cellSize);
 			++redCounter;
 		}
 	}
