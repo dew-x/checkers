@@ -10,13 +10,7 @@ Game::Game(){
 	app.setVerticalSyncEnabled(true);
 	app.setKeyRepeatEnabled(false);
 	scene = SCENE_MENU;
-
-	int min = width;
-	if (height < width) min = height;
-	ox = (width - min) / 2;
-	oy = (height - min) / 2;
-	cellSize = min / 8;
-
+	aiTurn = 0;
 	atached = false;
 	//load images
 	if (!menuBackground.loadFromFile("textures/menu.png"))
@@ -62,11 +56,13 @@ Game::Game(){
 	//app.setMouseCursorVisible(false);
 
 	board = new Board(width, height);
+	player = new AIPlayer();
 }
 
 
 Game::~Game(){
 	delete board;
+	delete player;
 }
 
 void Game::run(){
@@ -88,8 +84,7 @@ void Game::run(){
 				}
 				else if (scene == SCENE_GAME) {
 					if (event.mouseButton.button == sf::Mouse::Left) {
-						//initPos = worldToGrid(event.mouseButton.x, event.mouseButton.y);
-						board->press(event.mouseButton.x, event.mouseButton.y);
+						if (userPlaysAs==board->currentPlayer()) board->press(event.mouseButton.x, event.mouseButton.y);
 					}
 				}
 			}
@@ -99,9 +94,13 @@ void Game::run(){
 					if (event.mouseButton.button == sf::Mouse::Left) {
 						if (playerB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
 							scene = SCENE_GAME;
+							userPlaysAs = (Player)(rand() % PLAYER_NONE);
+							board->reset();
 						}
 						if (iaB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
 							scene = SCENE_GAME;
+							userPlaysAs = PLAYER_NONE;
+							board->reset();
 						}
 						if (exitB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
 							app.close();
@@ -111,10 +110,7 @@ void Game::run(){
 
 				else if (scene == SCENE_GAME) {
 					if (event.mouseButton.button == sf::Mouse::Left) {
-						finalPos = worldToGrid(event.mouseButton.x, event.mouseButton.y);
-						if (initPos.x >= 0 && initPos.x <= 7 && finalPos.y >= 0 && finalPos.y <= 7) {
-							board->release(event.mouseButton.x, event.mouseButton.y);
-						}
+						if (userPlaysAs == board->currentPlayer()) board->release(event.mouseButton.x, event.mouseButton.y);
 					}
 				}
 			}
@@ -168,6 +164,15 @@ void Game::doGame(sf::Time dt){
 
 void Game::updateGame(){
 	board->move(sf::Mouse::getPosition(app).x, sf::Mouse::getPosition(app).y);
+	if (userPlaysAs != board->currentPlayer()) {
+		++aiTurn;
+		if (aiTurn > AITURNS) {
+			GRID grid;
+			board->getGrid(grid);
+			board->makeMove(player->doMove(grid, board->getActualMoves()));
+			aiTurn = 0;
+		}
+	}
 }
 
 void Game::drawGame(){
@@ -177,10 +182,3 @@ void Game::drawGame(){
 void Game::updatePositions(){
 
 }
-
-Position Game::worldToGrid(int x, int y) {
-	Position p = { (x - ox) / cellSize , (y - oy) / cellSize };
-	cout << p.x << " " << p.y << endl;
-	return p;
-}
-

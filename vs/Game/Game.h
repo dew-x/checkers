@@ -7,6 +7,7 @@
 using namespace std;
 
 #define NICKSIZE 25
+#define AITURNS 180
 
 enum scenes {
 	SCENE_MENU,
@@ -27,10 +28,10 @@ private:
 	int uid;
 	scenes scene;
 	Board *board;
+	Player userPlaysAs;
+	AIPlayer *player;
 
-	int ox;
-	int oy;
-	int cellSize;
+	int aiTurn;
 
 	bool atached;
 	void drawMenu();
@@ -38,10 +39,6 @@ private:
 	void updateGame();
 	void drawGame();
 	void updatePositions();
-
-	Position worldToGrid(int x, int y);
-	Position initPos;
-	Position finalPos;
 
 	// TEXTURES
 	sf::Texture menuBackground;

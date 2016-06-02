@@ -56,8 +56,8 @@ public:
 	int currentTurn();
 	bool gameEnded();
 	Player whoWon();
-	bool isMoveValid(Position a, Position b);
-	void makeMove(Position a, Position b);
+	bool isMoveValid(Move m);
+	void makeMove(Move m);
 	void getGrid(GRID &res);
 	void reset();
 	void update();
@@ -71,6 +71,7 @@ public:
 	void press(int x, int y);
 	void move(int x, int y);
 	void release(int x, int y);
+	const vector<Move> getActualMoves();
 private:
 	
 private:

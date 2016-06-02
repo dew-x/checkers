@@ -57,24 +57,24 @@ Player Board::whoWon()
 	else return PLAYER_NONE;
 }
 
-bool Board::isMoveValid(Position a, Position b)
+bool Board::isMoveValid(Move m)
 {
-	unsigned aID = pos2id(a);
-	unsigned bID = pos2id(b);
+	unsigned aID = m.a;
+	unsigned bID = m.b;
 	for (unsigned i = 0; i < actualMoves.size(); ++i) {
 		if (actualMoves[i].a == aID && actualMoves[i].b == bID) return true;
 	}
 	return false;
 }
 
-void Board::makeMove(Position a, Position b)
+void Board::makeMove(Move m)
 {
-	if (isMoveValid(a, b)) {
-		unsigned aID = pos2id(a);
-		unsigned bID = pos2id(b);
+	if (isMoveValid(m)) {
+		unsigned aID = m.a;
+		unsigned bID = m.b;
 		grid[bID] = grid[aID];
 		grid[aID] = NONE;
-		if (b.y == 0 || b.y == 7) grid[bID] = (Piece)(grid[bID]|QUEEN);
+		if (bID < 4 || bID >= 28) grid[bID] = (Piece)(grid[bID]|QUEEN);
 		actualMoves = listPossibleMoves(grid, currentPlayer());
 		update();
 	}
@@ -217,6 +217,11 @@ void Board::release(int x, int y){
 		moving->setPosition(x, y);
 		moving = NULL;
 	}
+}
+
+const vector<Move> Board::getActualMoves()
+{
+	return actualMoves;
 }
 
 vector<Move> listPossibleMoves(GRID g, Player p)
