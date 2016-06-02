@@ -38,13 +38,19 @@ const GRID DEFAULT = {
 	BLACK,BLACK,BLACK,BLACK,
 };
 
+struct Action {
+	unsigned pos;
+	Piece value;
+};
+
 struct Move {
 	unsigned a, b;
+	vector<Action> todo;
 };
 
 vector<Move> listPossibleMoves(GRID g, Player p);
-void moveQueen(GRID g, unsigned pos, vector<Move> &moves, Move m);
-void moveNormal(GRID g, unsigned pos, int d, vector<Move> &moves, Move m);
+void moveQueen(GRID g, unsigned pos, vector<Move> &moves, Move m, bool init);
+void moveNormal(GRID g, unsigned pos, int d, vector<Move> &moves, Move m, bool init);
 
 class Board:public sf::Drawable
  {

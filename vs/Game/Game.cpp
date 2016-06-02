@@ -93,14 +93,14 @@ void Game::run(){
 				if (scene == SCENE_MENU) {
 					if (event.mouseButton.button == sf::Mouse::Left) {
 						if (playerB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
+							board->reset();
 							scene = SCENE_GAME;
 							userPlaysAs = (Player)(rand() % PLAYER_NONE);
-							board->reset();
 						}
 						if (iaB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
+							board->reset();
 							scene = SCENE_GAME;
 							userPlaysAs = PLAYER_NONE;
-							board->reset();
 						}
 						if (exitB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
 							app.close();
@@ -166,8 +166,8 @@ void Game::updateGame(){
 	board->move(sf::Mouse::getPosition(app).x, sf::Mouse::getPosition(app).y);
 	if (userPlaysAs != board->currentPlayer()) {
 		++aiTurn;
-		cout << "AI" << aiTurn << endl;
 		if (aiTurn > AITURNS) {
+			system("PAUSE");
 			GRID grid;
 			board->getGrid(grid);
 			board->makeMove(player->doMove(grid, board->getActualMoves()));

@@ -26,6 +26,27 @@ Board::Board(int width, int height)
 		}
 	}
 	checkers = vector<sf::Sprite>(24);
+	//load images
+	if (!whiteChecker.loadFromFile("textures/whiteChecker.png"))
+	{
+		// error...
+		cout << "ERR" << endl;
+	}
+	if (!redChecker.loadFromFile("textures/redChecker.png"))
+	{
+		// error...
+		cout << "ERR" << endl;
+	}
+	if (!whiteQueen.loadFromFile("textures/whiteQueen.png"))
+	{
+		// error...
+		cout << "ERR" << endl;
+	}
+	if (!redQueen.loadFromFile("textures/redQueen.png"))
+	{
+		// error...
+		cout << "ERR" << endl;
+	}
 	update();
 	moving = NULL;
 }
@@ -72,9 +93,10 @@ void Board::makeMove(Move m)
 	if (isMoveValid(m)) {
 		unsigned aID = m.a;
 		unsigned bID = m.b;
-		grid[bID] = grid[aID];
-		grid[aID] = NONE;
-		if (bID < 4 || bID >= 28) grid[bID] = (Piece)(grid[bID]|QUEEN);
+		for (unsigned i = 0; i < m.todo.size(); ++i) {
+			grid[m.todo[i].pos] = m.todo[i].value;
+		}
+		++turn;
 		actualMoves = listPossibleMoves(grid, currentPlayer());
 		update();
 	}
@@ -95,27 +117,6 @@ void Board::reset()
 }
 
 void Board::update(){
-	//load images
-	if (!whiteChecker.loadFromFile("textures/whiteChecker.png"))
-	{
-		// error...
-		cout << "ERR" << endl;
-	}
-	if (!redChecker.loadFromFile("textures/redChecker.png"))
-	{
-		// error...
-		cout << "ERR" << endl;
-	}
-	if (!whiteQueen.loadFromFile("textures/whiteQueen.png"))
-	{
-		// error...
-		cout << "ERR" << endl;
-	}
-	if (!redQueen.loadFromFile("textures/redQueen.png"))
-	{
-		// error...
-		cout << "ERR" << endl;
-	}
 	int whiteCounter = 0;
 	int redCounter = 0;
 	for (unsigned i = 0; i < GSIZE; ++i) {
@@ -168,6 +169,7 @@ Piece Board::otherPiece(Piece p)
 {
 	if (p&WHITE) return BLACK;
 	else if (p&BLACK) return WHITE;
+	else return NONE;
 }
 
 bool Board::playerUsePiece(Player player, Piece piece)
@@ -231,22 +233,27 @@ vector<Move> listPossibleMoves(GRID g, Player p)
 	for (unsigned i = 0; i < GSIZE; ++i) {
 		if (Board::playerUsePiece(p, g[i])) {
 			if (Board::isQueen(g[i])) {
-				moveQueen(g, i, ret, { i,0 });
+				moveQueen(g, i, ret, { i,0 },true);
 			}
 			else {
-				moveNormal(g, i, dir, ret,{ i,0 });
+				moveNormal(g, i, dir, ret,{ i,0 },true);
 			}
 		}
 	}
-	cout << ret.size() << endl;
+	cout << "MOVES FOR PLAYER: " << p << endl;
+	for (unsigned i = 0; i < ret.size(); ++i) {
+		Position a = Board::id2pos(ret[i].a);
+		Position b = Board::id2pos(ret[i].b);
+		cout <<i<<" "<< a.x << " " << a.y << " -> " << b.x << " " << b.y << endl;
+	}
 	return ret;
 }
 
-void moveQueen(GRID g, unsigned pos, vector<Move> &moves, Move m)
+void moveQueen(GRID g, unsigned pos, vector<Move> &moves, Move m, bool init)
 {
 }
 
-void moveNormal(GRID g, unsigned pos, int d, vector<Move> &moves, Move m)
+void moveNormal(GRID g, unsigned pos, int d, vector<Move> &moves, Move m, bool init)
 {
 	Position current = Board::id2pos(pos);
 	int nextY = (int)current.y + d;
@@ -254,20 +261,27 @@ void moveNormal(GRID g, unsigned pos, int d, vector<Move> &moves, Move m)
 		// right
 		if (current.x < 7) {
 			unsigned right = Board::pos2id({ current.x + 1,current.y + d });
-			if (g[right] == NONE) {
-				moves.push_back({ m.a,right });
+			if (g[right] == NONE && init) {
+				vector<Action> todo(0);
+				todo.push_back({ pos,NONE });
+				todo.push_back({ right,g[pos] });
+				moves.push_back({ m.a, right, todo });
 			}
 			else if (g[right] & Board::otherPiece(g[pos])) {
 				if (current.x < 6 && nextY >= 1 && nextY < 7) {
 					unsigned right2 = Board::pos2id({ current.x + 2,current.y + d +d});
 					if (g[right2] == NONE) {
-						moves.push_back({ m.a,right2 });
+						vector<Action> todo = m.todo;
+						todo.push_back({pos,NONE});
+						todo.push_back({ right,NONE });
+						todo.push_back({ right2,g[pos] });
+						moves.push_back({ m.a,right2,todo });
 						GRID gc;
 						memcpy(gc,g,GSIZE*sizeof(Piece));
 						gc[right2] = gc[pos];
 						gc[right] = NONE;
 						gc[pos] = NONE;
-						moveNormal(gc, right2, d, moves, m);
+						moveNormal(gc, right2, d, moves, { m.a,0,todo },false);
 					}
 				}
 			}
@@ -275,20 +289,27 @@ void moveNormal(GRID g, unsigned pos, int d, vector<Move> &moves, Move m)
 		// left
 		if (current.x > 0) {
 			unsigned left = Board::pos2id({ current.x - 1,current.y + d });
-			if (g[left] == NONE) {
-				moves.push_back({ m.a,left });
+			if (g[left] == NONE && init) {
+				vector<Action> todo(0);
+				todo.push_back({ pos,NONE });
+				todo.push_back({ left,g[pos] });
+				moves.push_back({ m.a, left, todo });
 			}
 			else if (g[left] & Board::otherPiece(g[pos])) {
 				if (current.x < 6 && nextY >= 1 && nextY < 7) {
 					unsigned left2 = Board::pos2id({ current.x - 2,current.y + d + d });
 					if (g[left2] == NONE) {
-						moves.push_back({ m.a,left2 });
+						vector<Action> todo = m.todo;
+						todo.push_back({ pos,NONE });
+						todo.push_back({ left,NONE });
+						todo.push_back({ left2,g[pos] });
+						moves.push_back({ m.a,left2,todo });
 						GRID gc;
 						memcpy(gc, g, GSIZE*sizeof(Piece));
 						gc[left2] = gc[pos];
 						gc[left] = NONE;
 						gc[pos] = NONE;
-						moveNormal(gc, left2, d, moves, m);
+						moveNormal(gc, left2, d, moves, { m.a,0,todo },false);
 					}
 				}
 			}
