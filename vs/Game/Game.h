@@ -32,9 +32,10 @@ private:
 	int oy;
 	int cellSize;
 
+	bool atached;
 	void drawMenu();
 	void doGame(sf::Time dt);
-	void updateGame(sf::Time dt);
+	void updateGame();
 	void drawGame();
 	void updatePositions();
 

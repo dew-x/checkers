@@ -17,6 +17,7 @@ Game::Game(){
 	oy = (height - min) / 2;
 	cellSize = min / 8;
 
+	atached = false;
 	//load images
 	if (!menuBackground.loadFromFile("textures/menu.png"))
 	{
@@ -87,7 +88,8 @@ void Game::run(){
 				}
 				else if (scene == SCENE_GAME) {
 					if (event.mouseButton.button == sf::Mouse::Left) {
-						initPos = worldToGrid(event.mouseButton.x, event.mouseButton.y);
+						//initPos = worldToGrid(event.mouseButton.x, event.mouseButton.y);
+						board->press(event.mouseButton.x, event.mouseButton.y);
 					}
 				}
 			}
@@ -111,7 +113,7 @@ void Game::run(){
 					if (event.mouseButton.button == sf::Mouse::Left) {
 						finalPos = worldToGrid(event.mouseButton.x, event.mouseButton.y);
 						if (initPos.x >= 0 && initPos.x <= 7 && finalPos.y >= 0 && finalPos.y <= 7) {
-							board->makeMove(initPos, finalPos);
+							board->release(event.mouseButton.x, event.mouseButton.y);
 						}
 					}
 				}
@@ -145,6 +147,7 @@ void Game::run(){
 			drawMenu();
 		}
 		else if (scene == SCENE_GAME) {
+			updateGame();
 			drawGame();
 		}
 		app.display();
@@ -163,8 +166,8 @@ void Game::doGame(sf::Time dt){
 
 }
 
-void Game::updateGame(sf::Time dt){
-
+void Game::updateGame(){
+	board->move(sf::Mouse::getPosition(app).x, sf::Mouse::getPosition(app).y);
 }
 
 void Game::drawGame(){
