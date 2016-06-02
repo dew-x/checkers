@@ -111,6 +111,9 @@ void Game::run(){
 				else if (scene == SCENE_GAME) {
 					if (event.mouseButton.button == sf::Mouse::Left) {
 						if (userPlaysAs == board->currentPlayer()) board->release(event.mouseButton.x, event.mouseButton.y);
+						if (board->gameEnded()) {
+							scene = SCENE_MENU;
+						}
 					}
 				}
 			}
@@ -171,6 +174,9 @@ void Game::updateGame(){
 			GRID grid;
 			board->getGrid(grid);
 			board->makeMove(player->doMove(grid, board->getActualMoves()));
+			if (board->gameEnded()) {
+				scene = SCENE_MENU;
+			}
 			aiTurn = 0;
 		}
 	}
