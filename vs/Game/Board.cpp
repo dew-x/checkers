@@ -68,6 +68,12 @@ int Board::currentTurn()
 
 bool Board::gameEnded()
 {
+	piecesBlack = 0;
+	piecesWhite = 0;
+	for (unsigned i = 0; i < GSIZE; ++i) {
+		if (grid[i] & BLACK) ++piecesBlack;
+		else if (grid[i] & WHITE) ++piecesWhite;
+	}
 	return piecesBlack == 0 || piecesWhite == 0;
 }
 
@@ -269,7 +275,7 @@ void moveQueen(GRID g, unsigned pos, vector<Move> &moves, Move m, bool init)
 			unsigned next = Board::pos2id({ (unsigned)x,(unsigned)y });
 			if (g[next] == NONE && (init || jump)) {
 				Move mov = { m.a,next,todo };
-				todo.push_back({ next,g[pos] });
+				mov.todo.push_back({ next,g[pos] });
 				moves.push_back(mov);
 				if (jump) {
 					GRID gc;
@@ -280,7 +286,7 @@ void moveQueen(GRID g, unsigned pos, vector<Move> &moves, Move m, bool init)
 					moveQueen(gc, next, moves, mov, false);
 				}
 			}
-			else if (g[next] & Board::otherPiece(g[pos])) {
+			else if (g[next] & Board::otherPiece(g[pos]) && !jump) {
 				jump = true;
 				kill = next;
 				todo.push_back({ next,NONE });

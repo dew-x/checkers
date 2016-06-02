@@ -110,9 +110,11 @@ void Game::run(){
 
 				else if (scene == SCENE_GAME) {
 					if (event.mouseButton.button == sf::Mouse::Left) {
-						if (userPlaysAs == board->currentPlayer()) board->release(event.mouseButton.x, event.mouseButton.y);
-						if (board->gameEnded()) {
-							scene = SCENE_MENU;
+						if (userPlaysAs == board->currentPlayer()) {
+							board->release(event.mouseButton.x, event.mouseButton.y);
+							if (board->gameEnded()) {
+								scene = SCENE_MENU;
+							}
 						}
 					}
 				}
