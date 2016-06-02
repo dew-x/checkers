@@ -7,7 +7,7 @@
 using namespace std;
 
 #define NICKSIZE 25
-#define AITURNS 100
+#define AITURNS 120
 
 enum scenes {
 	SCENE_MENU,

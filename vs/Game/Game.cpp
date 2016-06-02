@@ -167,7 +167,7 @@ void Game::updateGame(){
 	if (userPlaysAs != board->currentPlayer()) {
 		++aiTurn;
 		if (aiTurn > AITURNS) {
-			system("PAUSE");
+			//system("PAUSE");
 			GRID grid;
 			board->getGrid(grid);
 			board->makeMove(player->doMove(grid, board->getActualMoves()));

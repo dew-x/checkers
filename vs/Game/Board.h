@@ -62,7 +62,6 @@ public:
 	int currentTurn();
 	bool gameEnded();
 	Player whoWon();
-	bool isMoveValid(Move m);
 	void makeMove(Move m);
 	void getGrid(GRID &res);
 	void reset();
@@ -89,6 +88,7 @@ private:
 	vector<Move> actualMoves;
 	int cellSize;
 	int ox, oy;
+	unsigned origin;
 
 	sf::Sprite *moving;
 	sf::VertexArray table;
