@@ -56,13 +56,18 @@ Game::Game(){
 	//app.setMouseCursorVisible(false);
 
 	board = new Board(width, height);
-	player = new AIPlayer();
+	players = vector<AIPlayer*>(0);
+	players.push_back(new AIDummy());
+	players.push_back(new AIBest());
+	player = players[1];
 }
 
 
 Game::~Game(){
 	delete board;
-	delete player;
+	for (unsigned i = 0; i < players.size(); ++i) {
+		delete players[i];
+	}
 }
 
 void Game::run(){
@@ -175,7 +180,7 @@ void Game::updateGame(){
 			//system("PAUSE");
 			GRID grid;
 			board->getGrid(grid);
-			board->makeMove(player->doMove(grid, board->getActualMoves()));
+			board->makeMove(player->doMove(grid, board->currentPiece(), board->getActualMoves()));
 			if (board->gameEnded()) {
 				scene = SCENE_MENU;
 			}

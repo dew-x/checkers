@@ -59,6 +59,7 @@ public:
 	Board(int width, int height);
 	~Board();
 	Player currentPlayer();
+	Piece currentPiece();
 	int currentTurn();
 	bool gameEnded();
 	Player whoWon();

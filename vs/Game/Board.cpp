@@ -61,6 +61,12 @@ Player Board::currentPlayer()
 	return (Player)(turn%PLAYER_NONE);
 }
 
+Piece Board::currentPiece()
+{
+	if (currentPlayer() == PLAYER_WHITE) return WHITE;
+	else return BLACK;
+}
+
 int Board::currentTurn()
 {
 	return turn;
@@ -74,7 +80,7 @@ bool Board::gameEnded()
 		if (grid[i] & BLACK) ++piecesBlack;
 		else if (grid[i] & WHITE) ++piecesWhite;
 	}
-	return piecesBlack == 0 || piecesWhite == 0;
+	return piecesBlack == 0 || piecesWhite == 0 || actualMoves.size()==0;
 }
 
 Player Board::whoWon()
@@ -244,11 +250,11 @@ vector<Move> listPossibleMoves(GRID g, Player p)
 			}
 		}
 	}
-	cout << "MOVES FOR PLAYER: " << p << endl;
+	//cout << "MOVES FOR PLAYER: " << p << endl;
 	for (unsigned i = 0; i < ret.size(); ++i) {
 		Position a = Board::id2pos(ret[i].a);
 		Position b = Board::id2pos(ret[i].b);
-		cout <<i<<" "<< a.x << " " << a.y << " -> " << b.x << " " << b.y << endl;
+		//cout <<i<<" "<< a.x << " " << a.y << " -> " << b.x << " " << b.y << endl;
 	}
 	return ret;
 }

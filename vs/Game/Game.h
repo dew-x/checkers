@@ -30,6 +30,7 @@ private:
 	Board *board;
 	Player userPlaysAs;
 	AIPlayer *player;
+	vector<AIPlayer*> players;
 
 	int aiTurn;
 
