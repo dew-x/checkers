@@ -12,6 +12,24 @@ Game::Game(){
 	scene = SCENE_MENU;
 	aiTurn = 0;
 	atached = false;
+
+	if (!font.loadFromFile("arial.ttf"))
+	{
+		// error...
+	}
+
+	AIname1 = sf::Text("UNKNOWN",font);
+	AIname1.setFont(font);
+	AIname2 = sf::Text("UNKNOWN",font);
+	AIname2.setFont(font);
+
+	AIname1.setOrigin(AIname1.getLocalBounds().width / 2.0f, AIname1.getLocalBounds().height / 2.0f);
+	AIname1.setColor(sf::Color::White);
+	AIname1.setPosition(width/8.0f,height/5.0f);
+
+	AIname2.setOrigin(AIname2.getLocalBounds().width / 2.0f, AIname2.getLocalBounds().height / 2.0f);
+	AIname2.setColor(sf::Color::Red);
+	AIname2.setPosition(width-(width / 8.0f),height- (height / 5.0f));
 	//load images
 
 	//menu
@@ -117,6 +135,23 @@ Game::Game(){
 	players.push_back(new AIABP());
 	player1 = 0;
 	player2 = 0;
+
+	scores = vector<vector <int> >(players.size(), vector<int>(players.size(), 0));
+
+	scoreGrid = vector<sf::Text>((players.size() + 1)*(players.size() + 1));
+	for (unsigned i = 0;i<=players.size();i++) {
+		for (unsigned j = 0;j <=players.size();j++) {
+			unsigned c = i * (players.size() + 1) + j;
+			scoreGrid[c] = sf::Text("0",font,30);
+			if ((i == 0 && j != 0) || (i != 0 && j == 0)) {
+				scoreGrid[c].setCharacterSize(12);
+			}
+			scoreGrid[c].setOrigin(scoreGrid[c].getLocalBounds().width / 2.0f, scoreGrid[c].getLocalBounds().height / 2.0f);
+			scoreGrid[c].setPosition((j* width/30.0f) + width/40.0f, (i * height/16.0f)+ height/3.0f);
+			
+		}
+	}
+	updateScore();
 }
 
 
@@ -159,6 +194,12 @@ void Game::run(){
 							board->reset();
 							board->update();
 							userPlaysAs = (Player)(rand() % PLAYER_NONE);
+							if (userPlaysAs == PLAYER_WHITE) {
+								AIname1.setString("PLAYER");
+							}
+							else {
+								AIname2.setString("PLAYER");
+							}
 						}
 						if (iaB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
 							board->reset();
@@ -167,6 +208,8 @@ void Game::run(){
 							userPlaysAs = PLAYER_NONE;
 							player1 = rand() % players.size();
 							player2 = rand() % players.size();
+							AIname1.setString(players[player1]->getName());
+							AIname2.setString(players[player2]->getName());
 						}
 						if (exitB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
 							app.close();
@@ -188,6 +231,15 @@ void Game::run(){
 							scene = SCENE_GAME;
 							player1 = 3;
 						}
+						if (scene == SCENE_GAME) {
+							if (userPlaysAs == PLAYER_WHITE) {
+								AIname2.setString(players[player1]->getName());
+							}
+							else {
+								AIname1.setString(players[player1]->getName());
+							}
+						}
+						
 					}
 
 				}
@@ -270,8 +322,12 @@ void Game::updateGame(){
 			//system("PAUSE");
 			GRID grid;
 			board->getGrid(grid);
-			board->makeMove(players[board->currentPlayer()==PLAYER_WHITE?player1:player2]->doMove(grid, board->currentPiece(), board->getActualMoves()));
+			unsigned movingPlayer = board->currentPlayer() == PLAYER_WHITE ? player1 : player2;
+			board->makeMove(players[movingPlayer]->doMove(grid, board->currentPiece(), board->getActualMoves()));
 			if (board->gameEnded()) {
+				unsigned otherPlayer = movingPlayer == player2 ? player1 : player2;
+				++scores[movingPlayer][otherPlayer];
+				updateScore();
 				scene = SCENE_MENU;
 			}
 			aiTurn = 0;
@@ -281,8 +337,26 @@ void Game::updateGame(){
 
 void Game::drawGame(){
 	app.draw(*board);
+	app.draw(AIname1);
+	app.draw(AIname2);
+	for (unsigned i = 0; i < scoreGrid.size(); i++) {
+		app.draw(scoreGrid[i]);
+	}
 }
 
-void Game::updatePositions(){
-
+void Game::updateScore() {
+	for (unsigned i = 0; i <= players.size(); i++) {
+		for (unsigned j = 0; j <= players.size(); j++) {
+			unsigned c = i * (players.size() + 1) + j;
+			string s = "";
+			if ((i == 0 && j != 0) || (i !=0 && j == 0)) {
+				s = players[i + j - 1]->getName();
+			}
+			else if(i + j){
+				s += to_string(scores[i - 1][j - 1]);
+			}
+			scoreGrid[c].setString(s);
+			scoreGrid[c].setOrigin(scoreGrid[c].getLocalBounds().width / 2.0f, scoreGrid[c].getLocalBounds().height / 2.0f);
+		}
+	}
 }

@@ -32,6 +32,7 @@ private:
 	Player userPlaysAs;
 	unsigned player1, player2;
 	vector<AIPlayer*> players;
+	vector<vector<int> > scores;
 
 	int aiTurn;
 
@@ -41,7 +42,8 @@ private:
 	void doGame(sf::Time dt);
 	void updateGame();
 	void drawGame();
-	void updatePositions();
+	void updateScore();
+	
 
 	// TEXTURES
 
@@ -72,5 +74,11 @@ private:
 	sf::Sprite easyB;
 	sf::Sprite mediumB;
 	sf::Sprite hardB;
+
+	sf::Font font;
+	sf::Text AIname1;
+	sf::Text AIname2;
+
+	vector<sf::Text> scoreGrid;
 };
 
