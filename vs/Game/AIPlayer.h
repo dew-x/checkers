@@ -13,6 +13,8 @@ public:
 	string getName() { return name; };
 protected:
 	int evalGrid(const GRID g, Piece me);
+	int evalGrid2(const GRID g, Piece me);
+	int evalGrid3(const GRID g, Piece me);
 	void performMove(const GRID g, GRID &res, Move m);
 };
 
@@ -28,10 +30,16 @@ public:
 	Move doMove(GRID g, Piece me, vector<Move> m);
 };
 
+class AIBest2 : public AIPlayer {
+public:
+	AIBest2();
+	Move doMove(GRID g, Piece me, vector<Move> m);
+};
+
 class AIABP : public AIPlayer {
 public:
 	AIABP();
-	int minimax(GRID g, Piece playing, Player p, int depth, int a, int b, bool max);
+	int minimax(GRID g, Piece playing, Player p, int score0, int depth, int a, int b, bool max);
 	Move doMove(GRID g, Piece me, vector<Move> m);
 };
 

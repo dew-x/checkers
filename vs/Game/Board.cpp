@@ -81,12 +81,14 @@ bool Board::gameEnded()
 		if (grid[i] & BLACK) ++piecesBlack;
 		else if (grid[i] & WHITE) ++piecesWhite;
 	}
-	return piecesBlack == 0 || piecesWhite == 0 || actualMoves.size()==0;
+	return piecesBlack == 0 || piecesWhite == 0 || actualMoves.size()==0 || turn>300;
 }
 
 Player Board::whoWon()
 {
-	if (piecesBlack == 0) return PLAYER_WHITE;
+	if (turn > 300) return piecesBlack >= piecesWhite ? PLAYER_BLACK : PLAYER_WHITE;
+	else if (actualMoves.size() == 0) return currentPlayer();
+	else if (piecesBlack == 0) return PLAYER_WHITE;
 	else if (piecesWhite == 0) return PLAYER_BLACK;
 	else return PLAYER_NONE;
 }

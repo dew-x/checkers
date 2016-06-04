@@ -132,6 +132,7 @@ Game::Game(){
 	players = vector<AIPlayer*>(0);
 	players.push_back(new AIDummy());
 	players.push_back(new AIBest());
+	players.push_back(new AIBest2());
 	players.push_back(new AIABP());
 	player1 = 0;
 	player2 = 0;
@@ -142,12 +143,12 @@ Game::Game(){
 	for (unsigned i = 0;i<=players.size();i++) {
 		for (unsigned j = 0;j <=players.size();j++) {
 			unsigned c = i * (players.size() + 1) + j;
-			scoreGrid[c] = sf::Text("0",font,30);
+			scoreGrid[c] = sf::Text("0",font,25);
 			if ((i == 0 && j != 0) || (i != 0 && j == 0)) {
 				scoreGrid[c].setCharacterSize(12);
 			}
 			scoreGrid[c].setOrigin(scoreGrid[c].getLocalBounds().width / 2.0f, scoreGrid[c].getLocalBounds().height / 2.0f);
-			scoreGrid[c].setPosition((j* width/30.0f) + width/40.0f, (i * height/16.0f)+ height/3.0f);
+			scoreGrid[c].setPosition((j* width/25.0f) + width/40.0f, (i * height/16.0f)+ height/3.0f);
 			
 		}
 	}
@@ -208,6 +209,7 @@ void Game::run(){
 							userPlaysAs = PLAYER_NONE;
 							player1 = rand() % players.size();
 							player2 = rand() % players.size();
+							while (player2==player1) player2 = rand() % players.size();
 							AIname1.setString(players[player1]->getName());
 							AIname2.setString(players[player2]->getName());
 						}
@@ -259,11 +261,18 @@ void Game::run(){
 				if (event.key.code == sf::Keyboard::Escape || event.key.alt && event.key.code == sf::Keyboard::F4) {
 					app.close();
 				}
-				else if (scene == SCENE_GAME) {
-					if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::D) {
-
+				else if (scene == SCENE_MENU) {
+					if (event.key.code == sf::Keyboard::T) {
+						scene = SCENE_TEST;
+						toGoTest = TESTGAMES;
+						board->reset();
+						board->update();
+						player1 = rand() % players.size();
+						player2 = rand() % players.size();
+						while (player2 == player1) player2 = rand() % players.size();
+						AIname1.setString(players[player1]->getName());
+						AIname2.setString(players[player2]->getName());
 					}
-
 				}
 			}
 
@@ -288,6 +297,10 @@ void Game::run(){
 
 		else if (scene == SCENE_GAME) {
 			updateGame();
+			drawGame();
+		}
+		else if (scene == SCENE_TEST) {
+			updateTest();
 			drawGame();
 		}
 		app.display();
@@ -353,10 +366,36 @@ void Game::updateScore() {
 				s = players[i + j - 1]->getName();
 			}
 			else if(i + j){
-				s += to_string(scores[i - 1][j - 1]);
+				s += to_string(scores[i - 1][j - 1])+"-"+to_string(scores[j - 1][i - 1]);
 			}
 			scoreGrid[c].setString(s);
 			scoreGrid[c].setOrigin(scoreGrid[c].getLocalBounds().width / 2.0f, scoreGrid[c].getLocalBounds().height / 2.0f);
+		}
+	}
+}
+
+void Game::updateTest()
+{
+	GRID grid;
+	board->getGrid(grid);
+	unsigned movingPlayer = board->currentPlayer() == PLAYER_WHITE ? player1 : player2;
+	board->makeMove(players[movingPlayer]->doMove(grid, board->currentPiece(), board->getActualMoves()));
+	if (board->gameEnded()) {
+		unsigned otherPlayer = movingPlayer == player2 ? player1 : player2;
+		++scores[movingPlayer][otherPlayer];
+		updateScore();
+		--toGoTest;
+		if (toGoTest) {
+			board->reset();
+			board->update();
+			player1 = rand() % players.size();
+			player2 = rand() % players.size();
+			while (player2 == player1) player2 = rand() % players.size();
+			AIname1.setString(players[player1]->getName());
+			AIname2.setString(players[player2]->getName());
+		}
+		else {
+			scene = SCENE_MENU;
 		}
 	}
 }

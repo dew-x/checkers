@@ -8,12 +8,14 @@ using namespace std;
 
 #define NICKSIZE 25
 #define AITURNS 30
+#define TESTGAMES 100
 
 enum scenes {
 	SCENE_MENU,
 	SCENE_CHOSE_DIFICULT,
 	SCENE_GAME,
-	SCENE_SCORE
+	SCENE_SCORE,
+	SCENE_TEST
 };
 
 
@@ -27,6 +29,7 @@ private:
 	sf::RenderWindow app;
 	int width, height;
 	int uid;
+	int toGoTest;
 	scenes scene;
 	Board *board;
 	Player userPlaysAs;
@@ -43,6 +46,7 @@ private:
 	void updateGame();
 	void drawGame();
 	void updateScore();
+	void updateTest();
 	
 
 	// TEXTURES
