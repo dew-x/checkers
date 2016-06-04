@@ -114,6 +114,7 @@ Game::Game(){
 	players = vector<AIPlayer*>(0);
 	players.push_back(new AIDummy());
 	players.push_back(new AIBest());
+	players.push_back(new AIABP());
 	player1 = 0;
 	player2 = 0;
 }

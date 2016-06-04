@@ -11,6 +11,9 @@ protected:
 public:
 	virtual Move doMove(GRID g, Piece me, vector<Move> m) = 0;
 	string getName() { return name; };
+protected:
+	int evalGrid(const GRID g, Piece me);
+	void performMove(const GRID g, GRID &res, Move m);
 };
 
 class AIDummy : public AIPlayer {
@@ -24,4 +27,11 @@ public:
 	AIBest();
 	Move doMove(GRID g, Piece me, vector<Move> m);
 };
+
+class AIABP : public AIPlayer {
+public:
+	AIABP();
+	Move doMove(GRID g, Piece me, vector<Move> m);
+};
+
 
