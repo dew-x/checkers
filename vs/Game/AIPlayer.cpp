@@ -89,8 +89,7 @@ Move AIABP::doMove(GRID g, Piece me, vector<Move> m)
 	for (unsigned i = 0; i < m.size(); ++i) {
 		GRID gc;
 		performMove(g, gc, m[i]);
-		int v = minimax(gc, me, me == WHITE ? PLAYER_BLACK : PLAYER_WHITE, 2, a, b, false);
-		cout << v << endl;
+		int v = minimax(gc, me, me == WHITE ? PLAYER_BLACK : PLAYER_WHITE, 3, a, b, false);
 		if (v > a) {
 			a = v;
 			mID = i;
