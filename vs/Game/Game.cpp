@@ -13,6 +13,8 @@ Game::Game(){
 	aiTurn = 0;
 	atached = false;
 	//load images
+
+	//menu
 	if (!menuBackground.loadFromFile("textures/menu.png"))
 	{
 		// error...
@@ -30,6 +32,32 @@ Game::Game(){
 		// error...
 	}
 
+	//chose dificult
+	if (!choseBackground.loadFromFile("textures/IAselectionMenu.jpg"))
+	{
+		// error...
+	}
+	if (!dummyButton.loadFromFile("textures/DummyButton.jpg"))
+	{
+		// error...
+	}
+	if (!easyButton.loadFromFile("textures/EasyButton.jpg"))
+	{
+		// error...
+	}
+	if (!mediumButton.loadFromFile("textures/MediumButton.jpg"))
+	{
+		// error...
+	}
+	if (!hardButton.loadFromFile("textures/HardButton.jpg"))
+	{
+		// error...
+	}
+
+
+	//SPRITES
+
+	//menu
 	menuB.setTexture(menuBackground);
 	menuB.setPosition(0, 0);
 	menuB.setScale(width/menuB.getLocalBounds().width, height/menuB.getLocalBounds().height);
@@ -50,6 +78,33 @@ Game::Game(){
 	exitB.setOrigin(exitB.getLocalBounds().width/2.0f, exitB.getLocalBounds().height/2.0f);
 	exitB.setScale((width*0.18f) / exitB.getLocalBounds().width, (height*0.18f) / exitB.getLocalBounds().height);
 	exitB.setPosition(width - exitB.getGlobalBounds().width, height - exitB.getGlobalBounds().height);
+
+	//chose dificult
+	choseB.setTexture(choseBackground);
+	choseB.setPosition(0, 0);
+	choseB.setScale(width / choseB.getLocalBounds().width, height / choseB.getLocalBounds().height);
+
+	dummyB.setTexture(dummyButton);
+	dummyB.setOrigin(dummyB.getLocalBounds().width / 2.0f, dummyB.getLocalBounds().height / 2.0f);
+	dummyB.setScale((width*0.18f) / dummyB.getLocalBounds().width, (height*0.18f) / dummyB.getLocalBounds().height);
+	dummyB.setPosition(width / 4.0f, height / 3.0f);
+
+	easyB.setTexture(easyButton);
+	easyB.setOrigin(easyB.getLocalBounds().width / 2.0f, easyB.getLocalBounds().height / 2.0f);
+	easyB.setScale((width*0.18f) / easyB.getLocalBounds().width, (height*0.18f) / easyB.getLocalBounds().height);
+	easyB.setPosition(width - (width / 4.0f), height / 3.0f);
+
+	mediumB.setTexture(mediumButton);
+	mediumB.setOrigin(mediumB.getLocalBounds().width / 2.0f, mediumB.getLocalBounds().height / 2.0f);
+	mediumB.setScale((width*0.18f) / mediumB.getLocalBounds().width, (height*0.18f) / mediumB.getLocalBounds().height);
+	mediumB.setPosition(width / 4.0f,height -  (height / 4.0f));
+
+	hardB.setTexture(hardButton);
+	hardB.setOrigin(hardB.getLocalBounds().width / 2.0f, hardB.getLocalBounds().height / 2.0f);
+	hardB.setScale((width*0.18f) / hardB.getLocalBounds().width, (height*0.18f) / hardB.getLocalBounds().height);
+	hardB.setPosition(width - (width / 4.0f), height - (height / 4.0f));
+
+
 	
 	//create scope
 	
@@ -99,9 +154,9 @@ void Game::run(){
 				if (scene == SCENE_MENU) {
 					if (event.mouseButton.button == sf::Mouse::Left) {
 						if (playerB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
+							scene = SCENE_CHOSE_DIFICULT;
 							board->reset();
 							board->update();
-							scene = SCENE_GAME;
 							userPlaysAs = (Player)(rand() % PLAYER_NONE);
 						}
 						if (iaB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
@@ -117,7 +172,24 @@ void Game::run(){
 						}
 					}
 				}
+				else if (scene == SCENE_CHOSE_DIFICULT) {
+					if (event.mouseButton.button == sf::Mouse::Left) {
+						if (dummyB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
+							scene = SCENE_GAME;
+							player1 = 0;
+						}if (easyB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
+							scene = SCENE_GAME;
+							player1 = 1;
+						}if (mediumB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
+							scene = SCENE_GAME;
+							player1 = 2;
+						}if (hardB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
+							scene = SCENE_GAME;
+							player1 = 3;
+						}
+					}
 
+				}
 				else if (scene == SCENE_GAME) {
 					if (event.mouseButton.button == sf::Mouse::Left) {
 						if (userPlaysAs == board->currentPlayer()) {
@@ -157,6 +229,10 @@ void Game::run(){
 		if (scene == SCENE_MENU) {
 			drawMenu();
 		}
+		else if (scene == SCENE_CHOSE_DIFICULT) {
+			drawChoseDificult();
+		}
+
 		else if (scene == SCENE_GAME) {
 			updateGame();
 			drawGame();
@@ -171,6 +247,14 @@ void Game::drawMenu(){
 	app.draw(playerB);
 	app.draw(iaB);
 	app.draw(exitB);
+}
+
+void Game::drawChoseDificult(){
+	app.draw(choseB);
+	app.draw(dummyB);
+	app.draw(easyB);
+	app.draw(mediumB);
+	app.draw(hardB);
 }
 
 void Game::doGame(sf::Time dt){

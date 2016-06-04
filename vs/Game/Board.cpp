@@ -4,6 +4,7 @@
 Board::Board()
 {
 }
+
 Board::Board(int width, int height)
 {
 	reset();

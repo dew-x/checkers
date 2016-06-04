@@ -11,6 +11,7 @@ using namespace std;
 
 enum scenes {
 	SCENE_MENU,
+	SCENE_CHOSE_DIFICULT,
 	SCENE_GAME,
 	SCENE_SCORE
 };
@@ -36,20 +37,40 @@ private:
 
 	bool atached;
 	void drawMenu();
+	void drawChoseDificult();
 	void doGame(sf::Time dt);
 	void updateGame();
 	void drawGame();
 	void updatePositions();
 
 	// TEXTURES
+
+	//menu
 	sf::Texture menuBackground;
 	sf::Texture pb;
 	sf::Texture ib;
 	sf::Texture eb;
 
+	//chose dificult
+	sf::Texture choseBackground;
+	sf::Texture dummyButton;
+	sf::Texture easyButton;
+	sf::Texture mediumButton;
+	sf::Texture hardButton;
+
+	//SPRITES
+
+	//menu
 	sf::Sprite menuB;
 	sf::Sprite playerB;
 	sf::Sprite iaB;
 	sf::Sprite exitB;
+
+	//chose dificult
+	sf::Sprite choseB;
+	sf::Sprite dummyB;
+	sf::Sprite easyB;
+	sf::Sprite mediumB;
+	sf::Sprite hardB;
 };
 
