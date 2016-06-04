@@ -31,6 +31,7 @@ public:
 class AIABP : public AIPlayer {
 public:
 	AIABP();
+	int minimax(GRID g, Piece playing, Player p, int depth, int a, int b, bool max);
 	Move doMove(GRID g, Piece me, vector<Move> m);
 };
 

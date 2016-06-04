@@ -60,14 +60,20 @@ AIABP::AIABP()
 	name = "MEDIUM";
 }
 
+int AIABP::minimax(GRID g, Piece playing,Player p, int depth, int a, int b, bool max) {
+	if (depth == 0) return evalGrid(g,playing);
+	vector<Move> next = listPossibleMoves(g, p);
+	if (next.size()==0) return evalGrid(g, playing);
 	for (unsigned i = 0; i < next.size(); ++i) {
 		GRID gc;
 		performMove(g, gc, next[i]);
 		if (max) {
+			a = std::max(a, minimax(g,playing, p == PLAYER_BLACK ? PLAYER_WHITE : PLAYER_BLACK, depth - 1, a, b, false));
 			if (b <= a)
 				return b;
 		}
 		else {
+			b = std::min(b, minimax(g, playing, p==PLAYER_BLACK?PLAYER_WHITE:PLAYER_BLACK, depth - 1, a, b, true));
 			if (b <= a)
 				return a;
 		}
@@ -83,6 +89,7 @@ Move AIABP::doMove(GRID g, Piece me, vector<Move> m)
 	for (unsigned i = 0; i < m.size(); ++i) {
 		GRID gc;
 		performMove(g, gc, m[i]);
+		int v = minimax(gc, me, me == WHITE ? PLAYER_BLACK : PLAYER_WHITE, 2, a, b, false);
 		cout << v << endl;
 		if (v > a) {
 			a = v;
