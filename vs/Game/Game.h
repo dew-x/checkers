@@ -29,7 +29,7 @@ private:
 	scenes scene;
 	Board *board;
 	Player userPlaysAs;
-	AIPlayer *player;
+	unsigned player1, player2;
 	vector<AIPlayer*> players;
 
 	int aiTurn;

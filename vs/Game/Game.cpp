@@ -59,7 +59,8 @@ Game::Game(){
 	players = vector<AIPlayer*>(0);
 	players.push_back(new AIDummy());
 	players.push_back(new AIBest());
-	player = players[1];
+	player1 = 0;
+	player2 = 0;
 }
 
 
@@ -99,13 +100,17 @@ void Game::run(){
 					if (event.mouseButton.button == sf::Mouse::Left) {
 						if (playerB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
 							board->reset();
+							board->update();
 							scene = SCENE_GAME;
 							userPlaysAs = (Player)(rand() % PLAYER_NONE);
 						}
 						if (iaB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
 							board->reset();
+							board->update();
 							scene = SCENE_GAME;
 							userPlaysAs = PLAYER_NONE;
+							player1 = rand() % players.size();
+							player2 = rand() % players.size();
 						}
 						if (exitB.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
 							app.close();
@@ -180,7 +185,7 @@ void Game::updateGame(){
 			//system("PAUSE");
 			GRID grid;
 			board->getGrid(grid);
-			board->makeMove(player->doMove(grid, board->currentPiece(), board->getActualMoves()));
+			board->makeMove(players[board->currentPlayer()==PLAYER_WHITE?player1:player2]->doMove(grid, board->currentPiece(), board->getActualMoves()));
 			if (board->gameEnded()) {
 				scene = SCENE_MENU;
 			}
